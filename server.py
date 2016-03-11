@@ -80,3 +80,28 @@ class MyRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             self.send_header('Access-Control-Allow-Origin', '*')
             SimpleHTTPServer.SimpleHTTPRequestHandler.end_headers(self)
 g_glove = None
+
+def main():
+    global g_glove
+    # takes in arguments from the server
+    parser = argparse.ArgumentParser(description='Backend service for word2vec visualizations.')
+    parser.add_argument('--glove', type=str, help='''filename of word embedding data file or serialized GloveService.
+If the filename ends with .txt, it's interpreted as word embedding data file, otherwise two files are looked for,
+filename.ann and filename.json. This argument is mandatory.''')
+    parser.add_argument('--port',  type=int, default=8080, help='port of service.')
+    parser.add_argument('--globalProjection', action='store_true',
+            help='''use a single SVD for the whole dataset instead of always building it from local data.
+Can be overridden with /glove/?q=query&globalProjection=0''')
+    args = parser.parse_args()
+
+    loadStateFromSaveFile = not args.glove.endswith(".txt")
+
+    g_glove = glove.GloveService(args.glove, buildGlobalProjection=args.globalProjection, loadStateFromSaveFile=loadStateFromSaveFile)
+
+    server_address = ('0.0.0.0', args.port)
+
+    server = BaseHTTPServer.HTTPServer(server_address, MyRequestHandler)
+    server.serve_forever()
+
+if __name__ == "__main__":
+    main()
