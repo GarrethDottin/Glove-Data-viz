@@ -75,4 +75,8 @@ class MyRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 "Exception catched and re-raised for request " + str(parsedParams) + " aka " + str(self.path) + "\n")
             raise
 
+        # Allow XSS:
+        def end_headers(self):
+            self.send_header('Access-Control-Allow-Origin', '*')
+            SimpleHTTPServer.SimpleHTTPRequestHandler.end_headers(self)
 g_glove = None
