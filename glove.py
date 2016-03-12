@@ -176,7 +176,14 @@ class GloveService:
 
     def queryPure(self, wordOrWords, limit=100):
         justAWord = isinstance(wordOrWords, basestring)
-        localWords = self.findNeighbors(justAWord, limit)
+        if not justAWord and len(wordOrWords)==0:
+            return []
+        if justAWord:
+            word = wordOrWords
+            localWords = self.findNeighbors(word, limit)
+        else:
+            words = wordOrWords
+            localWords = multiWord.intersection(words, self, limit=limit)
         return localWords
 
     def query(self, wordOrWords, limit=100, useGlobalProjection=False):
@@ -195,6 +202,8 @@ def cloudToJson(localWords, reduced):
     for word, vec in zip(localWords, reduced):
         results.append( [ word, vec[0], vec[1] ] )
     return json.dumps({ "objects": results }, indent=4)
+
+
 
 
 
