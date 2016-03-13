@@ -7,7 +7,7 @@ import numpy as np
 import sklearn.decomposition
 import json
 
-
+import multiWord
 
 phase = None
 startTime = None
@@ -202,9 +202,6 @@ def cloudToJson(localWords, reduced):
     for word, vec in zip(localWords, reduced):
         results.append( [ word, vec[0], vec[1] ] )
     return json.dumps({ "objects": results }, indent=4)
-
-
-
 
 
 def main():
