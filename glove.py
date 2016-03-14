@@ -203,6 +203,9 @@ def cloudToJson(localWords, reduced):
         results.append( [ word, vec[0], vec[1] ] )
     return json.dumps({ "objects": results }, indent=4)
 
+def testGlove(gloveService, words):
+    js = gloveService.queryJson(words, limit=30, useGlobalProjection=False)
+    print json.dumps(js, indent=4)
 
 def main():
     gloveFile = sys.argv[1]
@@ -210,6 +213,8 @@ def main():
     loadStateFromSaveFile = not gloveFile.endswith(".txt")
     gloveService = GloveService(gloveFile, loadStateFromSaveFile=loadStateFromSaveFile)
 
+
+    testGlove(gloveService, words)
 
 if __name__=="__main__":
     main()
